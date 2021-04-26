@@ -1,0 +1,60 @@
+//234. Palindrome Linked List
+//https://leetcode.com/problems/palindrome-linked-list/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        /*
+        Complexity analysis: Time: O(n), Space: O(1)
+        */
+
+        if(head==null || head.next==null) return true;
+
+        //  Reverse the first half
+
+        ListNode prevSlowNode = null;
+        ListNode slowNode = head;
+        ListNode fastNode = head;
+        while(fastNode!=null && fastNode.next !=null){
+            fastNode = fastNode.next.next;                                      //Move fast pointer
+
+            //Reverse
+            ListNode nextSlowNode = slowNode.next;                              //Store next node in a variable
+            slowNode.next = prevSlowNode;                                       //Point current node to prev node
+            prevSlowNode = slowNode;                                            //Move prev node to next (curr) node
+            slowNode = nextSlowNode;                                            //Move curr node to next node
+        }
+
+        //  Find the pointers to the two halves
+
+        ListNode firstHalfPointer = prevSlowNode;                               //Point to prevSlowNode, like like 4 in
+                                                                                //[2,4,5,7] or [2,4,5,7,8]
+        ListNode secondHalfPointer = null;
+        if(fastNode==null){                                                     //List is of even length, like [2,4,5,7]
+            secondHalfPointer = slowNode;                                       //Point to slowNode, like 5 in [2,4,5,7]
+        }
+        else if(fastNode.next==null){                                           //List is of odd length, like [2,4,5,7,8]
+            secondHalfPointer = slowNode.next;                                  //Point to slowNode.next, like 7 in [2,4,5,7,8]
+        }
+
+        //  Compare the two halves
+
+        while(firstHalfPointer!=null && secondHalfPointer!=null){
+            if(firstHalfPointer.val != secondHalfPointer.val){
+                return false;
+            }
+            firstHalfPointer = firstHalfPointer.next;
+            secondHalfPointer = secondHalfPointer.next;
+        }
+
+        return true;
+    }
+}
